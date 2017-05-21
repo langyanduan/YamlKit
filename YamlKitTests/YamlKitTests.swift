@@ -24,6 +24,15 @@ class YamlKitTests: XCTestCase {
     func testExample() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
+        
+        do {
+            let data = try Data(contentsOf: URL(fileURLWithPath: "template/basic.yaml"))
+            let obj = try YAMLSerialization.yamlObject(with: data)
+            
+            print("\(obj)")
+        } catch {
+            print("\(error)")
+        }
     }
     
     func testPerformanceExample() {
