@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import libyaml
 
 public class YAMLSerialization {
     
