@@ -9,7 +9,7 @@
 import Foundation
 import libyaml
 
-class YAMLSerialization {
+public class YAMLSerialization {
     
     enum `Error`: Swift.Error {
         case parser
@@ -18,25 +18,25 @@ class YAMLSerialization {
     enum `Type` {
         case dictionary
         case array
-        case object         // string, number, bool
+        case object
     }
     
-    struct ReadingOptions: OptionSet {
-        let rawValue: UInt
-        
-        internal init(rawValue: UInt) {
+    public struct ReadingOptions: OptionSet {
+        public let rawValue: UInt
+        public init(rawValue: UInt) {
             self.rawValue = rawValue
         }
     }
     
-    struct WritingOptions: OptionSet {
-        let rawValue: UInt
-        
-        internal init(rawValue: UInt) {
+    public struct WritingOptions: OptionSet {
+        public let rawValue: UInt
+        public init(rawValue: UInt) {
             self.rawValue = rawValue
         }
     }
+}
 
+extension YAMLSerialization {
     class func object(nodes: [yaml_node_t], node: yaml_node_t) throws -> Any {
         func node_(_ index: Int32) -> yaml_node_t {
             return nodes[Int(index) - 1]
@@ -104,8 +104,10 @@ class YAMLSerialization {
             throw Error.parser
         }
     }
-    
-    class func yamlObject(with data: Data, options opt: YAMLSerialization.ReadingOptions = []) throws -> Any {
+}
+
+extension YAMLSerialization {
+    public class func yamlObject(with data: Data, options opt: YAMLSerialization.ReadingOptions = []) throws -> Any {
         var parser = yaml_parser_t()
         var event = yaml_event_t()
         var document = yaml_document_t()
@@ -181,11 +183,11 @@ class YAMLSerialization {
 //        return stack.first!
     }
     
-    class func data(withJSONObject obj: Any, options opt: YAMLSerialization.WritingOptions = []) throws -> Data {
+    public class func data(withJSONObject obj: Any, options opt: YAMLSerialization.WritingOptions = []) throws -> Data {
         return Data()
     }
     
-    class func isInvalidYAMLObject(_ obj: Any) -> Bool {
+    public class func isInvalidYAMLObject(_ obj: Any) -> Bool {
         return false
     }
 }
