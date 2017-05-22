@@ -29,9 +29,6 @@ Pod::Spec.new do |spec|
 
   spec.ios.deployment_target = '8.0'
  
-  spec.public_header_files = 'libyaml/include/yaml.h'
-  spec.source_files = 'libyaml/src/*.{h,c}', 'libyaml/include/yaml.h', 'YamlKit/YAMLSerialization.swift'
-  spec.preserve_paths = 'libyaml/include/*.h'
-  spec.xcconfig = { 'HEADER_SEARCH_PATHS' => '"${PODS_ROOT}/YamlKit/libyaml/include"',
-                    'GCC_PREPROCESSOR_DEFINITIONS' => 'HAVE_CONFIG_H' }
+  spec.source_files = 'Sources/**/*.swift'
+  spec.dependency = 'libyaml'
 end

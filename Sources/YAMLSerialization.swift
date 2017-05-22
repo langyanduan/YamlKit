@@ -53,14 +53,14 @@ extension YAMLSerialization {
                 let scanner = Scanner(string: text)
                 
                 do {
-                    var value: Double = 0
-                    if scanner.scanDouble(&value) && scanner.scanLocation == text.characters.count {
+                    var value: Int = 0
+                    if scanner.scanInt(&value) && scanner.scanLocation == text.characters.count {
                         return value
                     }
                 }
                 do {
-                    var value: Int = 0
-                    if scanner.scanInt(&value) && scanner.scanLocation == text.characters.count {
+                    var value: Double = 0
+                    if scanner.scanDouble(&value) && scanner.scanLocation == text.characters.count {
                         return value
                     }
                 }
