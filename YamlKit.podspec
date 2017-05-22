@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |spec|
   spec.name             = 'YamlKit'
-  spec.version          = '0.1.3'
+  spec.version          = '0.1.5'
   spec.summary          = 'YAML support for Swift. Based on recommended libyaml.'
 
 # This description is used to generate tags and improve search results.
@@ -28,22 +28,10 @@ Pod::Spec.new do |spec|
   spec.social_media_url = 'https://twitter.com/langyanduan'
 
   spec.ios.deployment_target = '8.0'
-  # spec.default_subspec = 'core'
-  spec.default_subspec = 'libyaml'
  
-  spec.subspec 'libyaml' do |libyaml|
-    libyaml.public_header_files = 'libyaml/include/yaml.h'
-    libyaml.source_files = 'libyaml/src/*.{h,c}', 'libyaml/include/yaml.h' 
-    libyaml.preserve_paths = 'libyaml/include/*.h'
-    libyaml.xcconfig = { 'HEADER_SEARCH_PATHS' => '"${PODS_ROOT}/YamlKit/libyaml/include"',
-                         'GCC_PREPROCESSOR_DEFINITIONS' => 'HAVE_CONFIG_H' }
-    libyaml.module_name = 'libyaml'
-  end
-  
-  spec.subspec 'core' do |core|
-    core.source_files = [
-      'YamlKit/YAMLSerialization.swift'
-    ]
-    core.dependency 'YamlKit/libyaml'
-  end 
+  spec.public_header_files = 'libyaml/include/yaml.h'
+  spec.source_files = 'libyaml/src/*.{h,c}', 'libyaml/include/yaml.h', 'YamlKit/YAMLSerialization.swift'
+  spec.preserve_paths = 'libyaml/include/*.h'
+  spec.xcconfig = { 'HEADER_SEARCH_PATHS' => '"${PODS_ROOT}/YamlKit/libyaml/include"',
+                    'GCC_PREPROCESSOR_DEFINITIONS' => 'HAVE_CONFIG_H' }
 end
