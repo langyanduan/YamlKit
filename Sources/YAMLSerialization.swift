@@ -107,6 +107,42 @@ extension YAMLSerialization {
 }
 
 extension YAMLSerialization {
+    class func dump(object: Any ,to document: UnsafeMutablePointer<yaml_document_t>) throws -> Int32 {
+        var nodeId: Int32 = 0
+        switch object {
+        case let dict as Dictionary<String, Any>:
+            let mappingId = yaml_document_add_mapping(document, nil, YAML_ANY_MAPPING_STYLE)
+            for (key, value) in dict {
+                let keyId = try dump(object: key, to: document)
+                let valueId = try dump(object: value, to: document)
+                yaml_document_append_mapping_pair(document, mappingId, keyId, valueId)
+            }
+            nodeId = mappingId
+        case let array as Array<Any>:
+            let sequenceId = yaml_document_add_sequence(document, nil, YAML_ANY_SEQUENCE_STYLE)
+            for item in array {
+                let itemId = try dump(object: item, to: document)
+                yaml_document_append_sequence_item(document, sequenceId, itemId)
+            }
+            nodeId = sequenceId
+//        case let string as String:
+//            break
+//        case let bool as Bool:
+//            break
+//        case let float as Float:
+//            break
+        default:
+            let value = "\(object)"
+            let scalarId = value.withCString {
+                return yaml_document_add_scalar(document, nil, unsafeBitCast($0, to: UnsafeMutablePointer<UInt8>.self), Int32(value.utf8.count), YAML_ANY_SCALAR_STYLE)
+            }
+            nodeId = scalarId
+        }
+        return nodeId
+    }
+}
+
+extension YAMLSerialization {
     public class func yamlObject(with data: Data, options opt: YAMLSerialization.ReadingOptions = []) throws -> Any {
         var parser = yaml_parser_t()
         var event = yaml_event_t()
@@ -184,7 +220,28 @@ extension YAMLSerialization {
     }
     
     public class func data(withJSONObject obj: Any, options opt: YAMLSerialization.WritingOptions = []) throws -> Data {
-        return Data()
+        // Create and initialize a document to hold this.
+        var document = yaml_document_t()
+        yaml_document_initialize(&document, nil, nil, nil, 1, 1)
+        try dump(object: obj, to: &document)
+        
+        var data = NSMutableData()
+        var emitter = yaml_emitter_t()
+        yaml_emitter_initialize(&emitter);
+        yaml_emitter_set_indent(&emitter, 2)
+        yaml_emitter_set_output(&emitter, { (point, bytes, len) -> Int32 in
+            guard let point = point, let bytes = bytes else {
+                return 0
+            }
+            var data = point.assumingMemoryBound(to: NSMutableData.self).pointee
+            data.append(bytes, length: len)
+            return Int32(len)
+        }, &data)
+        yaml_emitter_dump(&emitter, &document);
+        yaml_emitter_delete(&emitter);
+        yaml_document_delete(&document);
+        
+        return data as Data
     }
     
     public class func isInvalidYAMLObject(_ obj: Any) -> Bool {
