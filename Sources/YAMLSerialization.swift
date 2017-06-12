@@ -33,6 +33,9 @@ public class YAMLSerialization {
         public init(rawValue: UInt) {
             self.rawValue = rawValue
         }
+        
+        public static let tag = WritingOptions(rawValue: 1)
+        public static let implicit = WritingOptions(rawValue: 2)
     }
 }
 
